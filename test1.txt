@@ -1,0 +1,192 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<windows.h>
+int n;
+struct student//结构体
+{
+ int  xuehao;
+ char name[20];
+ int  score;
+ }student[20];
+//student[i].xuehao;
+//student[i].name;
+//student[i].score;
+int color(int c)      //颜色函数
+{
+ SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),c); //更改文字颜色
+ return 0;
+}
+void input(struct student *p)//学生信息输入
+{
+ int i;
+ printf("学生信息输入\n");
+ printf("请输入学生的实际人数:");
+ scanf("%d",&n);//输入最大人数
+ printf("请输入学生的学号 姓名 成绩:");
+ for(i=0;i<n;i++)//输入每一个学生的学号，名字，成绩
+ {
+  scanf("%d %s %d",&p[i].xuehao,&p[i].name,&p[i].score);
+ }
+ printf("学生信息输入已完成\n");
+ printf("按回车键继续");
+ getch();
+}
+void del(struct student *p)//学生信息删除
+{
+ int number,i,flag;
+ printf("学生信息删除\n");
+ printf("请输入要删除的学生学号:");
+ scanf("%d",&number);
+ for(i=0;i<n;i++)
+ {
+  if(p[i].xuehao==number)
+  {
+   printf("%s的信息是你要删除的吗？\n",p[i].name);
+   printf("%d %s %d\n",p[i].xuehao,p[i].name,p[i].score);
+   printf("1：确定  0：否定\n");
+   scanf("%d",&flag);
+   if(flag==1)//执行确定删除
+   {
+    p[i].score=-1;
+   }
+   }
+ }
+ printf("学生信息删除已完成\n");
+ printf("按回车键继续");
+ getch();
+}
+void find(struct student *p)//学生信息查询
+{
+ int number,i;
+ int flag=0;
+ printf("学生信息查询\n");
+    printf("请输入要查找的学生学号:");
+    scanf("%d",&number);
+ for(i=0;i<n;i++)
+ {
+  if(p[i].score==-1)
+  {
+   continue;
+  }
+  if((number==p[i].xuehao)&&(p[i].score!='\0'))
+  {
+   flag=1;
+   printf("你要查询的学生信息是%d %s %d\n",
+      p[i].xuehao,p[i].name,p[i].score);
+  }
+  }
+ if(flag==0){
+  printf("没有找到该学生信息\n");
+ }
+ printf("学生信息查询已完成\n");
+ printf("按回车键继续");
+ getch();
+}
+void sort(struct student *p)//学生信息排序
+{
+ int i,j;
+ struct student t;
+ printf("学生信息排序\n");
+ for(i=0;i<n-1;i++)
+ {
+  if(p[i].score==-1)
+  {
+   continue;
+  }
+  for(j=0;j<n-1-i;j++)
+  {
+  if(p[j].score>p[j+1].score)
+   {
+    t=p[j];
+    p[j]=p[j+1];
+    p[j+1]=t;
+   }
+  }
+ }
+ for(i=0;i<n;i++){
+  if(p[i].score==-1){
+   continue;
+  }
+  printf("%d %s %d\n",p[i].xuehao,p[i].name,p[i].score);
+ }
+ printf("学生信息排序已完成\n");
+ printf("按回车键继续");
+ getch();
+}
+void display(struct student *p)//显示学生信息
+{
+ int i;
+ printf("显示成绩\n");
+ for(i=0;i<n;i++)
+ {
+  if(p[i].score!=-1)
+  {
+   printf("%d %s %d\n",p[i].xuehao,p[i].name,p[i].score);
+  }
+ }
+    printf("学生信息显示已完成\n");
+ printf("按回车键继续");
+ getch();
+}
+void save(struct student *p)//学生信息保存
+{
+ int i;
+ FILE *fp;
+ if((fp=fopen("stutent.dat","w"))==NULL)
+ {
+  printf("open file error\n");
+  return;
+ }
+ for(i=0;i<n;i++)
+ {
+  if(p[i].score==-1)
+  {
+   continue;
+  }
+  fprintf(fp,"%d %s %d\n",p[i].xuehao,p[i].name,p[i].score);
+ }
+ fclose(fp);//关闭
+ printf("学生信息保存已完成\n");
+    printf("按回车键继续");
+ getch();
+}
+int main(){
+while(1){
+int x;
+system("cls");
+  color(11);
+  printf("\n");
+  printf("           欢迎使用学生成绩管理系统  \n");
+  printf("\n");
+  printf("\n");
+  printf("          ***************************  \n");
+  printf("          *        主菜单           *\n");
+  printf("          ***************************\n");
+  printf("\n");
+  printf("\n");
+  printf("           1 成绩输入   2 成绩删除   \n");
+  printf("\n");
+  printf("           3 成绩查询   4 成绩排序   \n");
+  printf("\n");
+  printf("           5 显示成绩   6 成绩保存   \n");
+  printf("\n");
+  printf("           7 退出系统\n");
+  printf("\n");
+  printf("           请选择[1/2/3/4/5/6/7]: ");
+  scanf("%d",&x);
+  printf("\n");
+  switch(x){
+case 1:input(&student[0]);break;
+      case 2:del(&student[0]);break;
+      case 3:find(&student[0]);break;
+      case 4:sort(&student[0]);break;
+      case 5:display(&student[0]);break;
+      case 6:save(&student[0]);break;
+      case 7:printf("退出系统\n");break;
+      default:printf("所调用菜单函数不存在，请重新输入。\n");
+  }
+  if(x==7) break;
+ }
+ return 0;
+}

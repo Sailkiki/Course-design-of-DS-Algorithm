@@ -1,0 +1,360 @@
+#include <iostream>
+#include<string>
+#include<vector>
+#include<fstream>
+#include<sstream>
+#include<conio.h>
+
+
+using namespace std;
+
+
+class Student {
+public:
+string name;
+string Id;
+int grades;
+void input();
+void Readfile(istream &in);
+void Writefile(ostream &out);
+void print();
+};
+
+
+void Student::input() {
+cout << "Please Input Student Name:";
+cin >> name;
+cout << "Please Input Student Id:";
+cin >> Id;
+cout << "Please Input Student Grades:";
+cin >> grades;
+}
+
+
+void Student::Readfile(istream &in) {
+in >> name >> Id >> grades;
+}
+void Student::Writefile(ostream &out) {
+out << name << " " << Id << " " << grades << endl;
+}
+
+
+void Student::print() {
+cout << "Student Name:" << name << endl
+<< "Student Id:" << Id << endl
+<< "Student Grades:" << grades << "\n" << endl;
+}
+
+
+class StudentManage {
+public:
+void add();
+void broswer();
+void search();
+void menu();
+void drop();
+void modify();
+vector<Student> sort();
+void MWriteFile(vector<Student>);
+private:
+ofstream fout;
+ifstream fin;
+Student stu,stui;
+vector<Student> stuVec;
+Student& searchById(string &stuId);
+Student& searchByName(string& name);
+void swap(Student&, Student&);
+};
+
+
+void StudentManage::MWriteFile(vector<Student> wrtVec){
+fout.open("test.txt");
+for (auto & stuwrite : wrtVec)
+stuwrite.Writefile(fout);
+fout.close();
+}
+
+
+void StudentManage::add() {
+stu.input();
+fout.open("test.txt",ios::app);
+stu.Writefile(fout);
+fout.close();
+}
+
+
+void StudentManage::broswer() {
+fin.open("test.txt");
+stu.Readfile(fin);
+while (!fin.eof()) {
+stu.print();
+stu.Readfile(fin);
+}
+fin.close();
+}
+
+
+Student& StudentManage::searchById(string &stuId) {
+fin.open("test.txt");
+stu.Readfile(fin);
+while (!fin.eof())
+if (stu.Id == stuId)
+return stu;
+fin.close();
+}
+
+
+Student& StudentManage::searchByName(string &stuName) {
+fin.open("test.txt");
+stu.Readfile(fin);
+while (!fin.eof())
+if (stu.name == stuName)
+return stu;
+fin.close();
+}
+
+
+void StudentManage::search() {
+cout << "1.按姓名查找：" << endl
+<< "2.按学号查找：" << endl
+<< "请输入数字开始查找！";
+int judge;
+cin >> judge;
+Student searchStu;
+string searchCondition;
+switch (judge)
+{
+case 1:
+cout << "请输入学生姓名：";
+cin >> searchCondition;
+searchStu = searchByName(searchCondition);
+searchStu.print();
+break;
+case 2:
+cout << "请输入学生学号：";
+cin >> searchCondition;
+searchStu = searchById(searchCondition);
+searchStu.print();
+break;
+default:
+break;
+}
+}
+
+
+void StudentManage::drop() {
+cout << "1.按姓名删除" << endl
+<< "2.按学号删除" << endl;
+int judge;
+fin.open("test.txt");
+string dropCondition;
+stu.Readfile(fin);
+cin >> judge;
+switch (judge)
+{
+case 1:
+cout << "请输入要删除的学生姓名：";
+cin >> dropCondition;
+while (!fin.eof()) {
+if (stu.name.compare(dropCondition) != 0) {
+stuVec.push_back(stu);
+stu.Readfile(fin);
+}
+else
+stu.Readfile(fin);
+}
+break;
+case 2:
+cout << "请输入要删除的学生学号：";
+cin >> dropCondition;
+while (!fin.eof()) {
+if (stu.name.compare(dropCondition) != 0) {
+stuVec.push_back(stu);
+stu.Readfile(fin);
+}
+else
+stu.Readfile(fin);
+}
+break;
+default:
+break;
+}
+fin.close();
+MWriteFile(stuVec);
+cout << "删除成功" << endl;
+}
+
+
+void StudentManage::modify() {
+int caseJudge;
+string modifyCondition;
+string line;
+cout << "1.按姓名修改！" << endl
+<< "2.按学号修改！" << endl;
+fin.open("test.txt");
+cin >> caseJudge;
+switch (caseJudge)
+{
+case 1:
+cout << "请输入要修改的学生姓名：";
+cin >> modifyCondition;
+while (getline(fin, line)) {                                        //运用getline();
+istringstream record(line);                                   //讲记录绑定到刚读入的行
+stu.Readfile(record);
+//record >> stu.name >> stu.Id >> stu.grades;                 //或者直接读入流
+if (stu.name == modifyCondition) {
+stu.print();
+cout << "确认修改？Y/N" << endl;
+char judgeC;
+cin >> judgeC;
+switch (judgeC)
+{
+case 'Y':
+stu.input();
+stuVec.push_back(stu);
+break;
+default:
+break;
+}
+}
+else
+stuVec.push_back(stu);
+}
+break;
+case 2:
+cout << "请输入要修改的学生学号：";
+cin >> modifyCondition;
+while (getline(fin, line)) {
+istringstream record(line);
+stu.Readfile(record);
+//record >> stu.name >> stu.Id >> stu.grades;
+if (stu.Id == modifyCondition) {
+stu.print();
+cout << "确认修改？Y/N" << endl;
+char judgeC = getchar();
+switch (judgeC)
+{
+case 'Y':
+stu.input();
+stuVec.push_back(stu);
+break;
+default:
+break;
+}
+}
+else
+stuVec.push_back(stu);
+}
+break;
+default:
+break;
+}
+fin.close();
+MWriteFile(stuVec);
+cout << "修改成功！" << endl;
+}
+
+
+void StudentManage::swap(Student& stu1,Student& stu2) {
+const Student temp = stu1;
+stu1 = stu2;
+stu2 = temp;
+}
+
+
+vector<Student> StudentManage::sort() {
+cout << "即将按成绩对学生信息进行排序！" << endl;
+fin.open("test.txt");
+string line;
+while (getline(fin, line)) {
+istringstream record(line);
+record >> stu.name >> stu.Id >> stu.grades;
+stuVec.push_back(stu);
+}
+vector<Student>::size_type length = stuVec.size();
+vector<Student>::size_type i,j;
+bool change = true;
+for (i = 1;i < length && change;++i) {
+change = false;
+for (j = 0;j < length - i;++j) 
+if (stuVec.at(j).grades > stuVec.at(j + 1).grades) {
+swap(stuVec.at(j), stuVec.at(j + 1));
+change = true;
+}
+}
+fin.close();
+for (auto test : stuVec) test.print();
+return stuVec;
+}
+
+
+void StudentManage::menu() {
+cout << "1.查看学生成绩信息" << endl
+<< "2.增加学生成绩信息" << endl
+<< "3.查找学生成绩信息" << endl
+<< "4.删除学生成绩信息" << endl
+<< "5.修改学生成绩信息" << endl
+<< "6.排序学生成绩信息" << endl
+<< "0.从本系统退出" << endl;
+}
+
+
+int main() {
+bool quit = false;
+StudentManage stum;
+while (!quit) {
+system("cls");
+stum.menu();
+cout << "请操作！" << endl;
+int x;
+cin >> x;
+char judge;
+switch (x)
+{
+case 1:
+stum.broswer();
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+case 2:
+stum.add();
+cout << "添加成功！" << endl;
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+case 3:
+stum.search();
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+case 4:
+stum.drop();
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+case 5:
+stum.modify();
+stum.broswer();
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+case 6:
+stum.MWriteFile(stum.sort());
+cout << "排序成功！" << endl;
+cout << "继续Y/N？";
+cin >> judge;
+if (judge == 'Y') break;
+else { quit = true;break; }
+default:
+quit = true;
+break;
+}
+}
+system("pause");
+return 0;
+}
