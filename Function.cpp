@@ -16,8 +16,7 @@
 using namespace std;
 
 
-
-//对当前表长进行初始化 
+//对当前表长进行初始化
 Function::Function()
 {
 	memset(UhashTable, 0, sizeof(UserNode*) * Usize);
@@ -29,7 +28,7 @@ Function::Function()
 void Function::Caclulate(int * a, int * b, Function hashtable, OtherFunc Ot, NodeOfHash * hashTable[Hsize])
 {
 	int Num2 = 0;//数组的计数器 
-	int UNum2 = 0;//数组的计数器 
+	int UNum2 = 0;//数组的计数器
 	int Temp2[Hsize];
 	int UTemp2[Usize];
 	memset(Temp2, 0, sizeof(Hsize));
@@ -180,7 +179,7 @@ void  Function::UHashTableInsert(char * Key)
 		不能有全局变量，那么解决方法一个就是在适当的时候进行初始化，(作为参数传递)
 		的一个数组，另一个就是在类声明对象的时候，需要提前在无参构造函数中进行
 		一步初始化的操作(声明在类里面的数组)*/ 
-		if (strcmp(pHead->UKey, Key) == 0)
+		if (strcmp(pHead->UKey, Key) != 0)
 		{
 			return;
 		}
@@ -238,7 +237,7 @@ void Function::HashTableInsert(char * Key, NodeOfHash * hashTable[Hsize])
 	这就是用二次探测法来解决冲突的思想*/
 	while (pHead)//当pHead存在的时候
 	{
-		if (strcmp(pHead->Key, Key) == 0)//如果有冲突
+		if (strcmp(pHead->Key, Key) != 0)//如果有冲突
 		{
 			return;
 		}
@@ -271,15 +270,12 @@ void Function::HashTableInsert(char * Key, NodeOfHash * hashTable[Hsize])
 		}
 	}
 
-	NodeOfHash* pNewNode = new NodeOfHash;//声明一个新节点，给他分配空间
+	NodeOfHash * pNewNode = new NodeOfHash;//声明一个新节点，给他分配空间
 	/*给这个结点的关键字分配一块空间， 大小为char类型乘以他的长度+1*/
 	//必须给它分配空间 
 	pNewNode->Key = (char *) malloc(sizeof(char));
-	
 	strcpy(pNewNode->Key, Key);//进行插入
-	
 	hashTable[k] = pNewNode;//将哈希表数组中的对应结点指向新的结点
-	
 }
 
 UserNode * Function::UHashTableFind(char * Key)
